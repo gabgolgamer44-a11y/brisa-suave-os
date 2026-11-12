@@ -11,6 +11,7 @@ locales
 console-setup
 keyboard-configuration
 tzdata
+systemd-timesyncd
 ca-certificates
 curl
 wget

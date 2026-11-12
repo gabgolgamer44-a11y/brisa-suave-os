@@ -192,18 +192,29 @@ EOF
 USUARIO="brisa"
 CASA="/home/$USUARIO"
 [ -d "$CASA" ] || exit 0
-mkdir -p "$CASA/.config/autostart" "$CASA/Área de Trabalho"
+mkdir -p "$CASA/.config/autostart"
 printf '[Desktop Entry]\nType=Application\nName=light-locker\nHidden=true\n' > "$CASA/.config/autostart/light-locker.desktop"
+chown -R "$USUARIO:$USUARIO" "$CASA/.config"
+# cria as pastas do usuário em português e descobre o nome da pasta da área de trabalho
+su "$USUARIO" -c "LANG=pt_BR.UTF-8 xdg-user-dirs-update" 2>/dev/null || true
+MESA="$(su "$USUARIO" -c 'xdg-user-dir DESKTOP' 2>/dev/null)"
+[ -n "$MESA" ] && [ "$MESA" != "$CASA" ] || MESA="$CASA/Área de trabalho"
+mkdir -p "$MESA"
 for arquivo in /usr/share/applications/install-debian.desktop /usr/share/applications/calamares.desktop; do
     if [ -f "$arquivo" ]; then
-        sed -e 's/^Name=.*/Name=Instalar o Brisa Suave OS/' -e 's/^Name\[.*//' \
+        sed -e 's/^Name=.*/Name=Instalar o Brisa Suave OS/' -e '/^Name\[/d' \
+            -e '/^Comment\[/d' -e 's/^Comment=.*/Comment=Instala o Brisa Suave OS no HD/' \
             -e 's|^Icon=.*|Icon=/usr/share/brisa/logo.svg|' "$arquivo" \
-            > "$CASA/Área de Trabalho/instalar-brisa.desktop"
-        chmod +x "$CASA/Área de Trabalho/instalar-brisa.desktop"
+            > "$MESA/instalar-brisa.desktop"
+        chmod +x "$MESA/instalar-brisa.desktop"
         break
     fi
 done
-chown -R "$USUARIO:$USUARIO" "$CASA/.config" "$CASA/Área de Trabalho"
+chown -R "$USUARIO:$USUARIO" "$MESA"
+# o live-config cria pastas soltas quando o nome tem espaço ("Área", "de", "trabalho")
+for solta in "Área" "de" "trabalho"; do rmdir "$CASA/$solta" 2>/dev/null || true; done
+# o Xfce só abre atalhos da área de trabalho marcados como confiáveis
+su "$USUARIO" -c "gio set '$MESA/instalar-brisa.desktop' metadata::xfce-exe-checksum \"\$(sha256sum '$MESA/instalar-brisa.desktop' | cut -d' ' -f1)\"" 2>/dev/null || true
 EOF
     chmod +x /usr/lib/live/config/2000-brisa
 

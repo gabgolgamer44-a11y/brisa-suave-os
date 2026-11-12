@@ -19,5 +19,5 @@
   <g fill="#C4A2FF" opacity="0.10">
     <path d="M0 880 C 420 800, 820 1000, 1240 900 S 1760 820, 1920 860 V1080 H0 Z"/>
   </g>
-  <text x="96" y="1010" font-family="Noto Sans, DejaVu Sans, sans-serif" font-size="34" font-weight="300" fill="#FFFFFF" opacity="0.55" letter-spacing="6">BRISA SUAVE OS</text>
+  <text x="240" y="1000" font-family="Noto Sans, DejaVu Sans, sans-serif" font-size="34" font-weight="300" fill="#FFFFFF" opacity="0.55" letter-spacing="6">BRISA SUAVE OS</text>
 </svg>

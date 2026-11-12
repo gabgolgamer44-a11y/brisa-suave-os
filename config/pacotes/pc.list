@@ -5,6 +5,8 @@
 live-boot
 live-config
 live-config-systemd
+# cria o usuário "brisa" no pendrive (sem ele não há entrada automática)
+user-setup
 
 # instalador gráfico ("Instalar no HD")
 calamares
