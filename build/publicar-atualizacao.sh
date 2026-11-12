@@ -20,7 +20,7 @@ cmp -s <(gpg --export "$CHAVE") "$PROJETO/apt/brisa.gpg" || \
     falha "apt/brisa.gpg não bate com a chave secreta. Não publique com chave errada."
 
 passo "Empacotando a versão $VERSAO"
-"$PROJETO/build/empacotar.sh" "$VERSAO"
+bash "$PROJETO/build/empacotar.sh" "$VERSAO"
 DEB="$SAIDA/brisa-suave_${VERSAO}_all.deb"
 
 passo "Preparando a branch gh-pages"

@@ -4,10 +4,10 @@
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-"$DIR/gerar-pc.sh" 64
-"$DIR/gerar-pc.sh" 32
+bash "$DIR/gerar-pc.sh" 64
+bash "$DIR/gerar-pc.sh" 32
 if [ -n "${1:-${ARMBIAN_IMAGEM:-}}" ]; then
-    "$DIR/gerar-btv.sh" "${1:-$ARMBIAN_IMAGEM}"
+    bash "$DIR/gerar-btv.sh" "${1:-$ARMBIAN_IMAGEM}"
 else
     echo "Versão do BTV pulada: informe a imagem do Armbian (veja docs/BTV11.md)."
 fi
