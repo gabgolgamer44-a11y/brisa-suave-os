@@ -13,7 +13,8 @@ apt-get install -y --no-install-recommends \
     grub-common grub-pc-bin grub-efi-amd64-bin grub-efi-ia32-bin \
     rsync xz-utils parted e2fsprogs fdisk \
     qemu-user-static binfmt-support \
-    librsvg2-bin curl unzip python3 ca-certificates
+    librsvg2-bin curl unzip python3 ca-certificates \
+    dpkg-dev apt-utils gnupg git
 
 passo "Ligando o simulador de processador ARM (para montar a versão do BTV)"
 if [ ! -e /proc/sys/fs/binfmt_misc/register ]; then

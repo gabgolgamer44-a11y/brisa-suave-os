@@ -57,13 +57,6 @@ APT::Install-Recommends "false";
 APT::Install-Suggests "false";
 EOF
 
-# Repositório próprio do Brisa (GitHub). Fica desligado até ser publicado.
-cat > /etc/apt/sources.list.d/brisa.list.desligado <<'EOF'
-# Apps do Brisa Suave OS (Central, Update, Store, temas).
-# Será ligado quando o repositório no GitHub estiver publicado:
-# deb [signed-by=/usr/share/keyrings/brisa.gpg] https://USUARIO.github.io/brisa-suave-os/apt estavel main
-EOF
-
 # o firmware pede aceite de licença em alguns pacotes
 echo "firmware-ipw2x00 firmware-ipw2x00/license/accepted boolean true" | debconf-set-selections || true
 
@@ -86,6 +79,11 @@ done
 passo "Instalando ${#PACOTES[@]} pacotes"
 "${APT[@]}" install "${PACOTES[@]}"
 "${APT[@]}" full-upgrade
+
+# Apps do Brisa como pacote: assim o Brisa Suave Update consegue atualizá-los
+# pelo repositório do GitHub (o pacote também liga esse repositório e traz a chave).
+passo "Pacote brisa-suave"
+dpkg -i "$DIR"/brisa-suave_*_all.deb || "${APT[@]}" -f install
 
 # ------------------------------------------------------------ idioma, teclado, horário
 passo "Português do Brasil, teclado ABNT2 e horário de Brasília"

@@ -55,6 +55,22 @@ Abra no Explorador de Arquivos:
 Lá estão `brisa-suave-os-pc64.iso`, `brisa-suave-os-pc32.iso` e `brisa-suave-os-btv11.img`.
 Dá para gravar direto dali com o balenaEtcher ou o Rufus, ou copiar para o Windows.
 
+## Publicar uma atualização dos apps do Brisa
+
+Mudou algo no Central, no Update, na Store, nos temas ou no catálogo? Copie o projeto
+para o Ubuntu (passo 0) e publique com um número de versão **maior** que o anterior:
+
+```powershell
+wsl -d PCMClawUbuntu -u root -- bash /root/brisa-suave-os/build/publicar-atualizacao.sh 1.0.1
+```
+
+Todos os Brisa Suave OS recebem a novidade pelo Brisa Suave Update. O repositório fica em
+https://gabgolgamer44-a11y.github.io/brisa-suave-os (branch `gh-pages`).
+
+**A chave de assinatura** fica só no Ubuntu do WSL, em `/root/.brisa-gnupg`. Sem ela não dá
+para publicar atualizações: faça uma cópia de segurança dessa pasta num lugar seguro,
+**fora** do GitHub. A parte pública da chave fica em `apt/brisa.gpg`.
+
 ## O que cada script faz
 
 | Script | O que faz |
@@ -63,6 +79,8 @@ Dá para gravar direto dali com o balenaEtcher ou o Rufus, ou copiar para o Wind
 | `build/gerar-pc.sh 64` ou `32` | Baixa o Debian, instala o XFCE, os programas e os apps do Brisa, e gera a ISO |
 | `build/gerar-btv.sh` | Pega a imagem do Armbian, coloca o Brisa dentro e prepara a inicialização do BTV 11 |
 | `build/gerar-tudo.sh` | Gera as três versões, uma depois da outra |
+| `build/empacotar.sh` | Empacota os apps do Brisa no pacote `brisa-suave` (.deb) |
+| `build/publicar-atualizacao.sh` | Publica uma nova versão dos apps no repositório de atualizações |
 | `build/personalizar.sh` | Roda dentro do sistema que está sendo montado: idioma, teclado, programas, visual |
 | `build/gerar-papeis-de-parede.py` | Recria os papéis de parede, se as cores forem mudadas |
 

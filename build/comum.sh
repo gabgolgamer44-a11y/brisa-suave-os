@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-BRISA_VERSAO="1.0"
+BRISA_VERSAO="1.0.0"
 PROJETO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # O trabalho pesado fica dentro do Linux (no disco do Windows o chroot não funciona).
 TRABALHO="${BRISA_TRABALHO:-/root/brisa-build}"
@@ -95,6 +95,9 @@ EOF
     mkdir -p "$raiz/tmp/brisa"
     cp -r "$PROJETO/config/pacotes" "$raiz/tmp/brisa/"
     install -m 755 "$PROJETO/build/personalizar.sh" "$raiz/tmp/brisa/personalizar.sh"
+    # os apps também vão como pacote .deb, para poderem ser atualizados depois
+    "$PROJETO/build/empacotar.sh" "$BRISA_VERSAO"
+    cp "$SAIDA/brisa-suave_${BRISA_VERSAO}_all.deb" "$raiz/tmp/brisa/"
     if [ -d "$PROJETO/branding/calamares" ]; then
         rsync -rlt --chmod=D755,F644 "$PROJETO/branding/calamares" "$raiz/tmp/brisa/"
         # o instalador usa imagens PNG
