@@ -1,0 +1,21 @@
+Package: brisa-suave
+Architecture: all
+Version: 1.0.0
+Priority: optional
+Section: misc
+Maintainer: Brisa Suave OS <atualizacoes@brisa-suave-os.invalid>
+Installed-Size: 288
+Depends: python3, python3-gi, gir1.2-gtk-3.0, pkexec | policykit-1, libnotify-bin, xfconf, x11-xserver-utils
+Recommends: librsvg2-common, gamemode, papirus-icon-theme, arc-theme
+Filename: pool/main/b/brisa-suave/brisa-suave_1.0.0_all.deb
+Size: 23888
+MD5sum: 4f95eddc52611d4dd673cc8504ae18a3
+SHA1: 1505e0022398167f71f4aed6704998396bd13047
+SHA256: 188242ddada95a0c373211bacd903d79081048a006567d3f6443db52026a42f4
+SHA512: 6bb5309f6051efc5cc7e3374d97e96781ade407cc8bfc5c7859964aa684a966ddc598d792684f9cf542f31de5b7960c2c67afb766e7b6aa7087e77c86a609e00
+Homepage: https://github.com/gabgolgamer44-a11y/brisa-suave-os
+Description: Apps do Brisa Suave OS
+ Brisa Suave Central (modos Normal, Economia e Gamer, aparência, data e hora),
+ Brisa Suave Update (atualizações) e Brisa Suave Store (loja de aplicativos),
+ com os ícones, papéis de parede e o repositório de atualizações do Brisa.
+

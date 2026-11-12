@@ -1,0 +1,36 @@
+Architectures: amd64 i386 arm64
+Codename: estavel
+Components: main
+Date: Thu, 12 Nov 2026 19:38:35 +0000
+Description: Apps do Brisa Suave OS
+Label: Brisa Suave OS
+Origin: Brisa Suave OS
+Suite: estavel
+MD5Sum:
+ 3cccb6589724f730be0594b8d34f30f2             1060 main/binary-amd64/Packages
+ 442e8c5163e5656a639289b104c66f89              717 main/binary-amd64/Packages.gz
+ 3cccb6589724f730be0594b8d34f30f2             1060 main/binary-arm64/Packages
+ 442e8c5163e5656a639289b104c66f89              717 main/binary-arm64/Packages.gz
+ 3cccb6589724f730be0594b8d34f30f2             1060 main/binary-i386/Packages
+ 442e8c5163e5656a639289b104c66f89              717 main/binary-i386/Packages.gz
+SHA1:
+ 2e1f184cbbda3d1459ffc14cc8fa83c29ebeecd7             1060 main/binary-amd64/Packages
+ 691052a0f898f379ab75049ea6d6df7ec7c2416d              717 main/binary-amd64/Packages.gz
+ 2e1f184cbbda3d1459ffc14cc8fa83c29ebeecd7             1060 main/binary-arm64/Packages
+ 691052a0f898f379ab75049ea6d6df7ec7c2416d              717 main/binary-arm64/Packages.gz
+ 2e1f184cbbda3d1459ffc14cc8fa83c29ebeecd7             1060 main/binary-i386/Packages
+ 691052a0f898f379ab75049ea6d6df7ec7c2416d              717 main/binary-i386/Packages.gz
+SHA256:
+ 87e1eba52d20bfdbd9039965da8dae3fa58d569f881f636dc73944c9d5619de9             1060 main/binary-amd64/Packages
+ affe96b2aa5bd3fb7ccaec67889c6bf6b53f28f2f9fc5ff9ff38315ba7e08d17              717 main/binary-amd64/Packages.gz
+ 87e1eba52d20bfdbd9039965da8dae3fa58d569f881f636dc73944c9d5619de9             1060 main/binary-arm64/Packages
+ affe96b2aa5bd3fb7ccaec67889c6bf6b53f28f2f9fc5ff9ff38315ba7e08d17              717 main/binary-arm64/Packages.gz
+ 87e1eba52d20bfdbd9039965da8dae3fa58d569f881f636dc73944c9d5619de9             1060 main/binary-i386/Packages
+ affe96b2aa5bd3fb7ccaec67889c6bf6b53f28f2f9fc5ff9ff38315ba7e08d17              717 main/binary-i386/Packages.gz
+SHA512:
+ 886a340a40944b804848373da2fd169326da0f9b0ad7534c09294aeba4df4c1935699cb25bbc3b2ed103bbb09957c074d64a455ea043804989414877a11de9ca             1060 main/binary-amd64/Packages
+ 2a6373dff424e3a5d5535032240be01bdf1ba479b53310ed1712be98c9f2ac4b8d8f184beed98977cb091ca9b774b53eedabbfc788003e93f11bc983c84c656e              717 main/binary-amd64/Packages.gz
+ 886a340a40944b804848373da2fd169326da0f9b0ad7534c09294aeba4df4c1935699cb25bbc3b2ed103bbb09957c074d64a455ea043804989414877a11de9ca             1060 main/binary-arm64/Packages
+ 2a6373dff424e3a5d5535032240be01bdf1ba479b53310ed1712be98c9f2ac4b8d8f184beed98977cb091ca9b774b53eedabbfc788003e93f11bc983c84c656e              717 main/binary-arm64/Packages.gz
+ 886a340a40944b804848373da2fd169326da0f9b0ad7534c09294aeba4df4c1935699cb25bbc3b2ed103bbb09957c074d64a455ea043804989414877a11de9ca             1060 main/binary-i386/Packages
+ 2a6373dff424e3a5d5535032240be01bdf1ba479b53310ed1712be98c9f2ac4b8d8f184beed98977cb091ca9b774b53eedabbfc788003e93f11bc983c84c656e              717 main/binary-i386/Packages.gz
