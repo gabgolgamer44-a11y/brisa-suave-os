@@ -33,7 +33,7 @@ if [ ! -d "$PAGINAS/.git" ] && [ ! -f "$PAGINAS/.git" ]; then
         git worktree add -f "$PAGINAS" -B gh-pages origin/gh-pages
     else
         git worktree add -f --detach "$PAGINAS"
-        ( cd "$PAGINAS" && git checkout -q --orphan gh-pages && git rm -rq . && git clean -fdq )
+        ( cd "$PAGINAS" && git checkout -q --orphan gh-pages && git rm -rqf . && git clean -fdq )
     fi
 else
     ( cd "$PAGINAS" && git checkout -q gh-pages && { git pull -q --ff-only origin gh-pages 2>/dev/null || true; } )
