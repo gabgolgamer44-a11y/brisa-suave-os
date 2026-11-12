@@ -1,0 +1,14 @@
+#!/bin/sh
+# Abre a janela que pede a senha de administrador quando um programa precisa
+# (ex.: GParted). Usa o primeiro agente que estiver instalado.
+for agente in \
+    /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 \
+    /usr/libexec/polkit-gnome-authentication-agent-1 \
+    /usr/lib/*/polkit-mate/polkit-mate-authentication-agent-1 \
+    /usr/libexec/polkit-mate-authentication-agent-1 \
+    /usr/bin/lxpolkit; do
+    if [ -x "$agente" ]; then
+        exec "$agente"
+    fi
+done
+exit 0

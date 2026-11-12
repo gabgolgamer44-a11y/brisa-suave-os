@@ -1,0 +1,5 @@
+# Brisa Suave OS: metade da RAM vira memória comprimida (zram).
+# Em 2 GB de RAM, isso dá cerca de 1 GB a mais para os programas.
+ALGO=zstd
+PERCENT=50
+PRIORITY=100

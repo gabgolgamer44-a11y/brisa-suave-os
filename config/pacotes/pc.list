@@ -1,0 +1,42 @@
+# Pacotes só das versões de PC (64 e 32 bits).
+# O kernel (linux-image-amd64 ou linux-image-686) é escolhido pelo script.
+
+# sistema rodando pelo pendrive
+live-boot
+live-config
+live-config-systemd
+
+# instalador gráfico ("Instalar no HD")
+calamares
+calamares-settings-debian
+grub2-common
+?grub-pc-bin
+?grub-efi-amd64-bin
+?grub-efi-ia32-bin
+?efibootmgr
+?os-prober
+?cryptsetup
+?dosfstools
+
+# drivers de placa de vídeo
+?xserver-xorg-video-all
+?mesa-vulkan-drivers
+
+# drivers de Wi-Fi, som e placa de vídeo (firmware)
+?firmware-linux-free
+?firmware-misc-nonfree
+?firmware-amd-graphics
+?firmware-intel-graphics
+?firmware-nvidia-graphics
+?firmware-realtek
+?firmware-iwlwifi
+?firmware-atheros
+?firmware-brcm80211
+?firmware-libertas
+?firmware-mediatek
+?firmware-zd1211
+?firmware-ti-connectivity
+?firmware-intel-sound
+?firmware-sof-signed
+?intel-microcode
+?amd64-microcode

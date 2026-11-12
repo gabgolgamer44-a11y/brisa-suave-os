@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Brisa Suave: pedido de senha de administrador
+Exec=/usr/lib/brisa/brisa-polkit-agente
+OnlyShowIn=XFCE;
+NoDisplay=true

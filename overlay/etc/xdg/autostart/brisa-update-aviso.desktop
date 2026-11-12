@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Brisa Suave Update: aviso de atualizações
+Comment=Procura atualizações uma vez por dia e avisa quando houver
+Exec=brisa-update --vigiar
+OnlyShowIn=XFCE;
+NoDisplay=true

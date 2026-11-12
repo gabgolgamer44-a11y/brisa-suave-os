@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Brisa Suave: primeiro login
+Comment=Aplica o papel de parede e o tema do Brisa Suave OS
+Exec=brisa-primeiro-login
+OnlyShowIn=XFCE;
+NoDisplay=true
+X-XFCE-Autostart-Override=true

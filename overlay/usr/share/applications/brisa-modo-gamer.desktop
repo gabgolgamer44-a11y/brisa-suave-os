@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Modo Gamer
+Comment=Liga ou desliga o modo gamer (Windows + G)
+Exec=brisa-modo alternar-gamer
+Icon=/usr/share/brisa/icones/brisa-gamer.svg
+Terminal=false
+Categories=Game;
+Keywords=gamer;jogo;desempenho;

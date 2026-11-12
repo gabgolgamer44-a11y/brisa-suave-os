@@ -1,0 +1,267 @@
+#!/usr/bin/python3
+"""Ajudante do Brisa Suave OS. Roda como administrador, chamado com pkexec.
+
+Só aceita estes pedidos (qualquer outra coisa é recusada):
+  modo normal|economia|gamer
+  hora fuso <Regiao/Cidade>
+  hora auto sim|nao
+  hora definir "AAAA-MM-DD HH:MM"
+  atualizar-lista
+  atualizar-tudo
+  instalar <pacote>     (somente pacotes do catálogo da Brisa Suave Store)
+  remover <pacote>      (somente pacotes do catálogo da Brisa Suave Store)
+"""
+import json
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+ESTADO = Path("/run/brisa")
+CATALOGO = Path("/usr/share/brisa/store/catalogo.json")
+CPU = Path("/sys/devices/system/cpu")
+BACKLIGHT = Path("/sys/class/backlight")
+
+# tarefas de fundo que param no modo gamer
+TIMERS_DE_FUNDO = ["apt-daily.timer", "apt-daily-upgrade.timer", "man-db.timer", "e2scrub_all.timer"]
+PROCESSOS_DE_FUNDO = {"apt", "apt-get", "dpkg", "unattended-upgr", "packagekitd", "updatedb",
+                      "updatedb.plocat", "mandb", "tracker-miner-f", "tumblerd", "fwupd"}
+
+APT_ENV = dict(os.environ, DEBIAN_FRONTEND="noninteractive", LANG="pt_BR.UTF-8", LC_ALL="pt_BR.UTF-8",
+               PATH="/usr/sbin:/usr/bin:/sbin:/bin")
+APT_OPCOES = ["-y", "-o", "Dpkg::Options::=--force-confdef", "-o", "Dpkg::Options::=--force-confold",
+              "-o", "APT::Status-Fd=1"]
+
+
+def erro(texto):
+    print(texto, file=sys.stderr)
+    sys.exit(2)
+
+
+def escrever(caminho: Path, valor: str):
+    try:
+        caminho.write_text(valor)
+    except OSError:
+        pass
+
+
+def ler(caminho: Path, padrao=""):
+    try:
+        return caminho.read_text().strip()
+    except OSError:
+        return padrao
+
+
+def rodar(cmd):
+    return subprocess.run(cmd, env=APT_ENV, check=False).returncode
+
+
+def variante():
+    for linha in ler(Path("/etc/brisa-release")).splitlines():
+        if linha.startswith("VARIANTE="):
+            return linha.split("=", 1)[1].strip().strip('"')
+    return "pc64"
+
+
+# ---------------------------------------------------------------- modos
+
+def _governador(preferidos):
+    for nucleo in sorted(CPU.glob("cpu[0-9]*")):
+        freq = nucleo / "cpufreq"
+        if not freq.is_dir():
+            continue
+        disponiveis = ler(freq / "scaling_available_governors").split()
+        for gov in preferidos:
+            if gov in disponiveis:
+                escrever(freq / "scaling_governor", gov)
+                break
+
+
+def _limite_frequencia(fracao):
+    """fracao=1.0 libera o processador inteiro; 0.7 limita a 70%."""
+    for nucleo in sorted(CPU.glob("cpu[0-9]*")):
+        freq = nucleo / "cpufreq"
+        maximo = ler(freq / "cpuinfo_max_freq")
+        minimo = ler(freq / "cpuinfo_min_freq", "0")
+        if maximo.isdigit():
+            alvo = max(int(minimo or 0), int(int(maximo) * fracao))
+            escrever(freq / "scaling_max_freq", str(alvo))
+
+
+def _preferencia_energia(valor):
+    for arq in CPU.glob("cpu[0-9]*/cpufreq/energy_performance_preference"):
+        escrever(arq, valor)
+
+
+def _brilho(economia: bool):
+    for tela in BACKLIGHT.glob("*"):
+        guardado = ESTADO / f"brilho-{tela.name}"
+        maximo = ler(tela / "max_brightness", "0")
+        atual = ler(tela / "brightness", "0")
+        if not maximo.isdigit() or not atual.isdigit() or int(maximo) == 0:
+            continue
+        if economia:
+            if not guardado.exists():
+                escrever(guardado, atual)
+            alvo = int(int(maximo) * 0.4)
+            if int(atual) > alvo:
+                escrever(tela / "brightness", str(alvo))
+        elif guardado.exists():
+            escrever(tela / "brightness", ler(guardado, atual))
+            guardado.unlink()
+
+
+def _timers(ligar: bool):
+    for timer in TIMERS_DE_FUNDO:
+        if ligar:
+            ativo = subprocess.run(["systemctl", "is-enabled", "--quiet", timer], check=False).returncode == 0
+            if ativo:
+                subprocess.run(["systemctl", "start", timer], check=False)
+        else:
+            subprocess.run(["systemctl", "stop", timer], check=False,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def _acalmar_processos_de_fundo():
+    """Dá menos prioridade ao que roda escondido, para sobrar mais para o jogo."""
+    for proc in Path("/proc").glob("[0-9]*"):
+        nome = ler(proc / "comm")
+        if nome in PROCESSOS_DE_FUNDO:
+            pid = proc.name
+            subprocess.run(["renice", "-n", "15", "-p", pid], check=False, stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL)
+            subprocess.run(["ionice", "-c", "3", "-p", pid], check=False, stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL)
+
+
+def modo(novo):
+    if novo not in ("normal", "economia", "gamer"):
+        erro("Modo inválido.")
+    ESTADO.mkdir(mode=0o755, exist_ok=True)
+    if novo == "normal":
+        _governador(["schedutil", "ondemand", "conservative", "powersave"])
+        _limite_frequencia(1.0)
+        _preferencia_energia("balance_performance")
+        _brilho(economia=False)
+        _timers(ligar=True)
+    elif novo == "economia":
+        _governador(["powersave", "conservative", "schedutil"])
+        _limite_frequencia(0.7)
+        _preferencia_energia("power")
+        _brilho(economia=True)
+        _timers(ligar=True)
+    else:  # gamer
+        _governador(["performance"])
+        _limite_frequencia(1.0)
+        _preferencia_energia("performance")
+        _brilho(economia=False)
+        _timers(ligar=False)
+        _acalmar_processos_de_fundo()
+    arq = ESTADO / "modo"
+    arq.write_text(novo)
+    arq.chmod(0o644)
+    print(novo)
+
+
+# ---------------------------------------------------------------- data e hora
+
+def hora(acao, valor):
+    if acao == "fuso":
+        if not re.fullmatch(r"[A-Za-z_]+(/[A-Za-z_]+)+", valor or "") or \
+                not Path("/usr/share/zoneinfo", valor).is_file():
+            erro("Fuso horário inválido.")
+        sys.exit(rodar(["timedatectl", "set-timezone", valor]))
+    if acao == "auto":
+        if valor not in ("sim", "nao"):
+            erro("Use sim ou nao.")
+        sys.exit(rodar(["timedatectl", "set-ntp", "true" if valor == "sim" else "false"]))
+    if acao == "definir":
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}", valor or ""):
+            erro("Data inválida. Use AAAA-MM-DD HH:MM.")
+        rodar(["timedatectl", "set-ntp", "false"])
+        sys.exit(rodar(["timedatectl", "set-time", valor + ":00"]))
+    erro("Pedido de hora inválido.")
+
+
+# ---------------------------------------------------------------- pacotes
+
+def _pacotes_do_catalogo():
+    """{pacote_principal: [todos os pacotes do app]} para esta variante."""
+    try:
+        dados = json.loads(CATALOGO.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        erro("Catálogo da loja não encontrado.")
+    var = variante()
+    permitidos = {}
+    for app in dados.get("apps", []):
+        if app.get("somente") and var not in app["somente"]:
+            continue
+        pacotes = app.get("pacotes", [])
+        if pacotes:
+            permitidos[pacotes[0]] = pacotes
+    return permitidos
+
+
+def _existe(pacote):
+    saida = subprocess.run(["apt-cache", "policy", pacote], capture_output=True, text=True,
+                           env=dict(APT_ENV, LANG="C", LC_ALL="C"), check=False).stdout
+    return "Candidate:" in saida and "Candidate: (none)" not in saida
+
+
+def instalar(pacote):
+    permitidos = _pacotes_do_catalogo()
+    if pacote not in permitidos:
+        erro("Este app não faz parte da Brisa Suave Store.")
+    if pacote == "steam-installer":
+        if variante() != "pc64":
+            erro("A Steam só funciona na versão de PC de 64 bits.")
+        rodar(["dpkg", "--add-architecture", "i386"])
+        rodar(["apt-get", "update"])
+    lista = [p for p in permitidos[pacote] if p == pacote or _existe(p)]
+    sys.exit(rodar(["apt-get", *APT_OPCOES, "install", *lista]))
+
+
+def remover(pacote):
+    permitidos = _pacotes_do_catalogo()
+    if pacote not in permitidos:
+        erro("Este app não faz parte da Brisa Suave Store.")
+    instalados = [p for p in permitidos[pacote]
+                  if subprocess.run(["dpkg-query", "-W", "-f=${db:Status-Status}", p], capture_output=True,
+                                    text=True, check=False).stdout == "installed"]
+    codigo = rodar(["apt-get", *APT_OPCOES, "remove", *instalados]) if instalados else 0
+    if codigo == 0:
+        codigo = rodar(["apt-get", *APT_OPCOES, "autoremove"])
+    sys.exit(codigo)
+
+
+# ---------------------------------------------------------------- principal
+
+def main():
+    if os.geteuid() != 0:
+        erro("O ajudante precisa rodar como administrador (pkexec).")
+    args = sys.argv[1:]
+    if not args:
+        erro(__doc__)
+    pedido = args[0]
+    if pedido == "modo" and len(args) == 2:
+        modo(args[1])
+    elif pedido == "hora" and len(args) == 3:
+        hora(args[1], args[2])
+    elif pedido == "atualizar-lista" and len(args) == 1:
+        sys.exit(rodar(["apt-get", "-o", "APT::Status-Fd=1", "update"]))
+    elif pedido == "atualizar-tudo" and len(args) == 1:
+        codigo = rodar(["dpkg", "--configure", "-a"])
+        if codigo == 0:
+            codigo = rodar(["apt-get", *APT_OPCOES, "full-upgrade"])
+        sys.exit(codigo)
+    elif pedido == "instalar" and len(args) == 2:
+        instalar(args[1])
+    elif pedido == "remover" and len(args) == 2:
+        remover(args[1])
+    else:
+        erro("Pedido não reconhecido.")
+
+
+if __name__ == "__main__":
+    main()

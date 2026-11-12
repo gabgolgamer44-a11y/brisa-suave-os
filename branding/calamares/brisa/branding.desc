@@ -1,0 +1,41 @@
+---
+# Visual do instalador "Instalar o Brisa Suave OS" (Calamares)
+componentName: brisa
+
+welcomeStyleCalamares: false
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 900px,620px
+windowPlacement: center
+sidebar: widget
+navigation: widget
+
+strings:
+    productName:         "Brisa Suave OS"
+    shortProductName:    "Brisa Suave"
+    version:             "1.0"
+    shortVersion:        "1.0"
+    versionedName:       "Brisa Suave OS 1.0"
+    shortVersionedName:  "Brisa Suave 1.0"
+    bootloaderEntryName: "Brisa Suave OS"
+    productUrl:          "https://github.com/"
+    supportUrl:          "https://github.com/"
+    knownIssuesUrl:      "https://github.com/"
+    releaseNotesUrl:     "https://github.com/"
+
+images:
+    productLogo:         "logo.png"
+    productIcon:         "logo.png"
+    productWelcome:      "fundo.png"
+
+slideshow:               "show.qml"
+slideshowAPI:            2
+
+style:
+    SidebarBackground:        "#0B2E6B"
+    SidebarText:              "#FFFFFF"
+    SidebarTextCurrent:       "#FFFFFF"
+    SidebarBackgroundCurrent: "#2F86E8"
+
+uploadServer:
+    type: "none"

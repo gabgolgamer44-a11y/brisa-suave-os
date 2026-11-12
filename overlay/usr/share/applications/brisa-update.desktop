@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Brisa Suave Update
+Comment=Procura e instala atualizações do sistema
+Exec=brisa-update
+Icon=/usr/share/brisa/icones/brisa-update.svg
+Terminal=false
+Categories=System;
+Keywords=atualizar;atualização;update;
+StartupNotify=true

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pesquisar
+Comment=Procurar e abrir aplicativos (Windows + R)
+Exec=xfce4-appfinder --collapsed
+Icon=system-search
+Terminal=false
+NoDisplay=true

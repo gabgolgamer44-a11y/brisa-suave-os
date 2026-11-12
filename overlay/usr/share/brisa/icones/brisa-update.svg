@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4FA8FF"/><stop offset="1" stop-color="#1257C9"/></linearGradient></defs>
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#g)"/>
+  <!-- duas setas em círculo -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round">
+    <path d="M47 27 A16 16 0 0 0 19 23"/>
+    <path d="M17 37 A16 16 0 0 0 45 41"/>
+  </g>
+  <g fill="#FFFFFF">
+    <path d="M13 17 L25 21 L16 29 Z"/>
+    <path d="M51 47 L39 43 L48 35 Z"/>
+  </g>
+</svg>

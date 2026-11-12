@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Brisa Suave Store
+Comment=Loja de aplicativos: instale e remova programas com um clique
+Exec=brisa-store
+Icon=/usr/share/brisa/icones/brisa-store.svg
+Terminal=false
+Categories=System;PackageManager;
+Keywords=loja;apps;aplicativos;instalar;programas;store;
+StartupNotify=true

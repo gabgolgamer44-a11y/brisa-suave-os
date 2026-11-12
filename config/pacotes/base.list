@@ -1,0 +1,99 @@
+# Pacotes de todas as versões do Brisa Suave OS (PC 64, PC 32 e BTV 11).
+# Uma linha por pacote.
+#   a|b   instala o primeiro que existir (a, senão b)
+#   ?pkg  opcional: pula se não existir nesta versão do Debian
+
+# sistema
+systemd-sysv
+dbus-user-session
+sudo
+locales
+console-setup
+keyboard-configuration
+tzdata
+ca-certificates
+curl
+wget
+nano
+less
+bash-completion
+zstd
+zram-tools
+xdg-user-dirs
+xdg-user-dirs-gtk
+python3
+python3-gi
+gir1.2-gtk-3.0
+librsvg2-common
+libnotify-bin
+polkitd
+pkexec
+policykit-1-gnome|mate-polkit|lxpolkit
+gamemode
+
+# rede e bluetooth
+network-manager
+network-manager-gnome
+wpasupplicant
+?bluez
+?blueman
+
+# vídeo (servidor gráfico)
+xserver-xorg-core
+xserver-xorg-input-libinput
+xserver-xorg-video-fbdev
+x11-xserver-utils
+xinit
+libgl1-mesa-dri
+?libglx-mesa0
+
+# tela de entrada e área de trabalho XFCE estilo Windows
+lightdm
+lightdm-gtk-greeter
+light-locker
+xfce4-session
+xfwm4
+xfce4-panel
+xfdesktop4
+xfce4-settings
+xfconf
+xfce4-appfinder
+xfce4-terminal
+xfce4-whiskermenu-plugin
+xfce4-pulseaudio-plugin
+xfce4-power-manager
+?xfce4-power-manager-plugins
+xfce4-notifyd
+xfce4-screenshooter
+xfce4-taskmanager
+thunar
+thunar-volman
+?thunar-archive-plugin
+gvfs
+gvfs-backends
+udisks2
+tumbler
+
+# som
+pipewire-pulse
+?pipewire-alsa
+wireplumber
+?libspa-0.2-bluetooth
+pavucontrol
+alsa-utils
+
+# visual
+arc-theme
+papirus-icon-theme
+adwaita-icon-theme
+fonts-noto-core
+fonts-noto-mono
+fonts-noto-color-emoji
+fonts-dejavu-core
+
+# programas escolhidos
+firefox-esr|falkon
+?firefox-esr-l10n-pt-br
+ristretto
+mousepad
+vlc

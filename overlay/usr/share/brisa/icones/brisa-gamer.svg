@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4FA8FF"/><stop offset="1" stop-color="#1257C9"/></linearGradient></defs>
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#g)"/>
+  <!-- controle de videogame -->
+  <path d="M20 22 H44 a10 10 0 0 1 10 10 v4 a8 8 0 0 1 -14 5 l-3 -3 H27 l-3 3 a8 8 0 0 1 -14 -5 v-4 a10 10 0 0 1 10 -10 Z" fill="#FFFFFF"/>
+  <g stroke="#1257C9" stroke-width="3" stroke-linecap="round"><line x1="19" y1="31" x2="27" y2="31"/><line x1="23" y1="27" x2="23" y2="35"/></g>
+  <g fill="#1257C9"><circle cx="41" cy="29" r="2.5"/><circle cx="46" cy="33" r="2.5"/></g>
+</svg>

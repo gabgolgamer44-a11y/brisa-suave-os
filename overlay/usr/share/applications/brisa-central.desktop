@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Brisa Suave Central
+Comment=Modos de energia, informações do aparelho, aparência, data e hora
+Exec=brisa-central
+Icon=/usr/share/brisa/icones/brisa-central.svg
+Terminal=false
+Categories=Settings;System;
+Keywords=modo;gamer;economia;tema;papel de parede;hora;data;memória;temperatura;
+StartupNotify=true
