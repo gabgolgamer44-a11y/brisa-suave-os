@@ -13,6 +13,7 @@ exigir_comandos losetup parted resize2fs e2fsck rsync curl unzip python3 xz
 
 ORIGEM="${1:-${ARMBIAN_IMAGEM:-}}"
 [ -n "$ORIGEM" ] || falha "informe a imagem do Armbian (arquivo .img.xz ou link). Veja docs/BTV11.md."
+ligar_simulador_arm
 [ -e /proc/sys/fs/binfmt_misc/qemu-aarch64 ] || falha "o simulador ARM está desligado. Rode build/preparar-wsl.sh."
 
 DTB="amlogic/meson-sm1-sei610.dtb"   # arquivo da placa do BTV 11 (X3BL46), segundo o projeto Educabox
@@ -33,6 +34,21 @@ limpar() {
 }
 trap limpar EXIT
 
+# CONTINUAR=1 reaproveita a imagem de uma montagem que parou no meio
+# (pula o download, a descompactação e o aumento de tamanho).
+if [ "${CONTINUAR:-0}" = "1" ] && [ -f "$IMAGEM" ]; then
+    passo "Continuando a montagem anterior"
+    LOOP="$(losetup -fP --show "$IMAGEM")"
+    sleep 1
+    PART_ROOT="" PART_BOOT=""
+    for parte in "$LOOP"p*; do
+        case "$(blkid -o value -s TYPE "$parte" 2>/dev/null)" in
+            ext4) PART_ROOT="$parte" ;;
+            vfat) [ -z "$PART_BOOT" ] && PART_BOOT="$parte" ;;
+        esac
+    done
+    [ -n "$PART_ROOT" ] || falha "não achei a partição do sistema na imagem anterior"
+else
 # ------------------------------------------------------------ imagem base
 passo "Pegando a imagem do Armbian"
 if [[ "$ORIGEM" =~ ^https?:// ]]; then
@@ -41,11 +57,14 @@ if [[ "$ORIGEM" =~ ^https?:// ]]; then
     ORIGEM="$BAIXADA"
 fi
 [ -f "$ORIGEM" ] || falha "arquivo não encontrado: $ORIGEM"
-case "$ORIGEM" in
-    *.xz) xz -dc "$ORIGEM" > "$IMAGEM" ;;
-    *.img) cp "$ORIGEM" "$IMAGEM" ;;
-    *) falha "use um arquivo .img ou .img.xz" ;;
-esac
+# os links do Armbian (ex.: .../Trixie_current_minimal) não têm extensão: confere pelo conteúdo
+if xz -t "$ORIGEM" 2>/dev/null; then
+    xz -dc "$ORIGEM" > "$IMAGEM"
+elif [[ "$ORIGEM" == *.img ]]; then
+    cp "$ORIGEM" "$IMAGEM"
+else
+    falha "o arquivo não é uma imagem .img nem .img.xz: $ORIGEM"
+fi
 
 passo "Aumentando a imagem em $ESPACO_EXTRA para caber o Brisa"
 truncate -s "+$ESPACO_EXTRA" "$IMAGEM"
@@ -64,6 +83,7 @@ parted -s "$LOOP" resizepart "$NUM_ROOT" 100%
 partx -u "$LOOP" 2>/dev/null || partprobe "$LOOP" 2>/dev/null || true
 e2fsck -fy "$PART_ROOT" || true
 resize2fs "$PART_ROOT"
+fi
 
 passo "Abrindo a imagem"
 mkdir -p "$RAIZ"
@@ -79,7 +99,8 @@ if [ "$ID_BASE" = "ubuntu" ]; then
 fi
 
 instalar_arquivos_brisa "$RAIZ" "btv11" "Armbian $SUITE"
-personalizar "$RAIZ" "btv11" "$SUITE"
+# em subshell: a "armadilha" de saída do personalizar não apaga a de limpar() daqui
+( personalizar "$RAIZ" "btv11" "$SUITE" )
 
 # ------------------------------------------------------------ inicialização pelo pendrive
 passo "Preparando a inicialização do BTV 11 pelo pendrive"
@@ -88,11 +109,14 @@ BOOT="$RAIZ/boot"
 
 SCRIPTS="$PASTA/bootscripts"
 if [ ! -f "$SCRIPTS/s905_autoscript" ]; then
-    LINK="$(curl -fsSL https://api.github.com/repos/devmfc/amlogic-bootscripts-Armbian/releases/latest |
-        python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(a["browser_download_url"] for a in d["assets"] if a["name"].endswith(".zip")))')"
+    # scripts de inicialização das TV boxes Amlogic (projeto devmfc, pasta principal do repositório)
     mkdir -p "$SCRIPTS"
-    curl -fL -o "$PASTA/bootscripts.zip" "$LINK"
-    unzip -o -j "$PASTA/bootscripts.zip" -d "$SCRIPTS"
+    for arquivo in aml_autoscript s905_autoscript gxl-fixup.scr emmc_autoscript; do
+        curl -fsSL -o "$SCRIPTS/$arquivo" \
+            "https://raw.githubusercontent.com/devmfc/amlogic-bootscripts-Armbian/HEAD/$arquivo"
+    done
+    # o app "Atualização" do Android pede o script dentro de um .zip
+    python3 -c 'import sys,zipfile; z=zipfile.ZipFile(sys.argv[1]+"/aml_autoscript.zip","w"); z.write(sys.argv[1]+"/aml_autoscript","aml_autoscript"); z.close()' "$SCRIPTS"
 fi
 for arquivo in aml_autoscript s905_autoscript; do
     [ -f "$BOOT/$arquivo" ] && mv "$BOOT/$arquivo" "$BOOT/$arquivo.armbian-original"

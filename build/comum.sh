@@ -30,6 +30,18 @@ exigir_comandos() {
     [ ${#faltando[@]} -eq 0 ] || falha "faltam programas: ${faltando[*]}. Rode antes: build/preparar-wsl.sh"
 }
 
+# Liga o simulador de processador ARM (qemu-aarch64). No WSL sem systemd o
+# registro some quando o WSL reinicia, então é refeito aqui sempre que precisar.
+ligar_simulador_arm() {
+    [ -e /proc/sys/fs/binfmt_misc/qemu-aarch64 ] && return 0
+    mountpoint -q /proc/sys/fs/binfmt_misc || mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc || true
+    update-binfmts --enable qemu-aarch64 2>/dev/null || true
+    if [ ! -e /proc/sys/fs/binfmt_misc/qemu-aarch64 ] && [ -f /usr/lib/binfmt.d/qemu-aarch64.conf ]; then
+        grep -v '^#' /usr/lib/binfmt.d/qemu-aarch64.conf | head -n1 > /proc/sys/fs/binfmt_misc/register || true
+    fi
+    [ -e /proc/sys/fs/binfmt_misc/qemu-aarch64 ]
+}
+
 # Monta /proc, /sys, /dev e /run dentro do sistema que está sendo montado.
 montar_chroot() {
     local raiz="$1"

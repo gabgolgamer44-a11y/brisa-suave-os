@@ -264,7 +264,9 @@ EOF
     # pula o assistente de primeiro acesso do Armbian (o Brisa já criou o usuário)
     rm -f /root/.not_logged_in_yet
     # trava o kernel e a inicialização: uma atualização deles pode deixar a TV box com tela preta
-    TRAVAR="$(dpkg-query -W -f='${Package}\n' 'linux-image-*' 'linux-dtb-*' 'linux-u-boot-*' 'armbian-bsp-*' 2>/dev/null || true)"
+    # só os que estão instalados de verdade (o dpkg também lista nomes que nunca foram instalados)
+    TRAVAR="$(dpkg-query -W -f='${db:Status-Status} ${Package}\n' 'linux-image-*' 'linux-dtb-*' 'linux-u-boot-*' 'armbian-bsp-*' 2>/dev/null |
+        awk '$1=="installed"{print $2}' || true)"
     if [ -n "$TRAVAR" ]; then
         # shellcheck disable=SC2086
         apt-mark hold $TRAVAR

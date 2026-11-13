@@ -17,11 +17,7 @@ apt-get install -y --no-install-recommends \
     dpkg-dev apt-utils gnupg git
 
 passo "Ligando o simulador de processador ARM (para montar a versão do BTV)"
-if [ ! -e /proc/sys/fs/binfmt_misc/register ]; then
-    mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc || true
-fi
-update-binfmts --enable qemu-aarch64 2>/dev/null || true
-if [ -e /proc/sys/fs/binfmt_misc/qemu-aarch64 ]; then
+if ligar_simulador_arm; then
     echo "Simulador ARM ligado."
 else
     aviso "o simulador ARM não ligou. A versão do BTV não vai ser montada até isso funcionar."

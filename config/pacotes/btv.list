@@ -1,5 +1,5 @@
 # Pacotes só da versão da TV box BTV 11.
-# O kernel, o driver de Wi-Fi (AP6212) e a inicialização já vêm na imagem do Armbian.
+# O kernel, o driver de Wi-Fi (AP6212, no pacote armbian-firmware) e a inicialização
+# já vêm na imagem do Armbian. Não coloque firmware-brcm80211 aqui: ele conflita
+# com o armbian-firmware.
 ?armbian-firmware
-?firmware-brcm80211
-?xserver-xorg-video-armsoc
