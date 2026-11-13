@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Brisa Suave: boas-vindas
+Comment=Abre o assistente na primeira vez que o sistema é usado
+Exec=brisa-boas-vindas --primeira-vez
+OnlyShowIn=XFCE;
+NoDisplay=true

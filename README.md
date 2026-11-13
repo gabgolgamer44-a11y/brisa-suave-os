@@ -31,6 +31,7 @@ gerenciador de tarefas, e os drivers de Wi-Fi e de placa de vídeo.
 | Modo Gamer | Liga ou desliga o modo gamer direto | Windows + G |
 | Brisa Suave Update | Procura e instala atualizações | — |
 | Brisa Suave Store | Loja de aplicativos | — |
+| Boas-vindas | Assistente da primeira vez: Wi-Fi, cor, atalhos e apps. Abre sozinho no primeiro login depois de instalar | — |
 
 ## Atalhos de teclado
 

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Boas-vindas
+Comment=Assistente do Brisa Suave OS: internet, cor, atalhos e apps
+Exec=brisa-boas-vindas
+Icon=/usr/share/brisa/icones/brisa-boas-vindas.svg
+Terminal=false
+Categories=System;Settings;
+Keywords=boas-vindas;assistente;wifi;começar;ajuda;
+StartupNotify=true
